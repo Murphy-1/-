@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" >
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta content="telephone=no" name="format-detection" />
+    <!--记录缓存的-->
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <!--清除浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="description" content="">
+    <title>学晟教育商城</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/autoload.js"></script>
+</head>
+<body>
+<img class="bg" src="img/bg1.jpg">
+<div class="number">
+    <p style="padding: 0 10%;">获得了由 <span class="fs24">学晟教育学晟教育</span> 提供的价值 <span class="fs24">1000</span> 购物卡一张</p>
+    <div class="mt10"><img class="imgw" src="img/cart.png"></div>
+
+    <div class="contain mt10">
+        <form action="#" id="form_gift">
+            <p class="tishi">请在下方输入您的手机号，领取购物卡</p>
+            <div class="con_input">
+                <input type="text" placeholder="请输入您的手机号" value="" id="str_phone" class="phone">
+                <input type="text" placeholder="请输入您的验证码" value="" class="ver_code">
+                <button class="get_code">获取验证码</button>
+            </div>
+            <button class="login">登录商城</button>
+        </form>
+        <!--<div class="text-center">-->
+        <!--&lt;!&ndash;<p class="get">您已成功领取，请登录商城使用</p>&ndash;&gt;-->
+        <!--<div style="position: relative;">-->
+        <!--<img class="width" src="img/bg2.png">-->
+        <!--<p class="get">13514475815</p>-->
+        <!--</div>-->
+
+        <!--<button class="login">登录商城</button>-->
+        <!--</div>-->
+    </div>
+    <!--<p class="power">* 学晟教育保留法律允许范围内对此购物卡的最终解释权</p>-->
+</div>
+<script>
+    $(".bg").height($(window).height());
+
+    var count = 10;
+    var myCountDown = 0;
+    $(".get_code").click(function(){
+        $(this).css('background-color','#b1b1b1');
+
+        var validator  = $("#form_gift").validate();
+        if(validator.element("#str_phone")){
+            $(".get_code").attr("disabled",true);
+            $(".get_code").html(""+ count +"秒后重发");
+            $("#form_gift").modalajax({
+                action:"load",
+                modal:false,
+                type:'post',
+                maskremove:true,
+                loadurl: '',
+                loaddata: {phoneNumber:function(){return $("#str_phone").val(); },smsWatertype:'2'},
+                beforeSend:null,
+                loadsuccess: function(reqdata){
+                    if(reqdata){
+                        myCountDown = setInterval(countDown,1000);
+                    }else{
+                        $(".error-title").html('发送失败!原因:'+reqdata['errCode']);
+                    }
+                }
+            });
+        }
+    });
+    function countDown(){
+        $(".get_code").html(""+ count +"秒后重发");
+        count--;
+        if(count==0){
+            $(".get_code").html("获取验证码").removeAttr("disabled");
+            $(".get_code").addClass("smsdist");
+            clearInterval(myCountDown);
+            count = 10;
+        }
+    }
+</script>
+</body>
+</html>
